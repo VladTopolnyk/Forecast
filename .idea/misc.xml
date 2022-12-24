@@ -3,7 +3,13 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/bynta/AndroidStudioProjects/forecast_test_task/app/src/main/res/layout/activity_main.xml" value="0.264" />
+        <entry key="..\:/Users/bynta/AndroidStudioProjects/forecast_test_task/app/src/main/res/drawable/search_field_background.xml" value="0.167" />
+        <entry key="..\:/Users/bynta/AndroidStudioProjects/forecast_test_task/app/src/main/res/drawable/search_icon_vector.xml" value="0.167" />
+        <entry key="..\:/Users/bynta/AndroidStudioProjects/forecast_test_task/app/src/main/res/drawable/tollbar_backgroung_vector.xml" value="0.167" />
+        <entry key="..\:/Users/bynta/AndroidStudioProjects/forecast_test_task/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Users/bynta/AndroidStudioProjects/forecast_test_task/app/src/main/res/layout/forecast_card_view.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/bynta/AndroidStudioProjects/forecast_test_task/app/src/main/res/layout/fragment_forecast.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/bynta/AndroidStudioProjects/forecast_test_task/app/src/main/res/layout/fragment_main.xml" value="0.25416666666666665" />
       </map>
     </option>
   </component>
