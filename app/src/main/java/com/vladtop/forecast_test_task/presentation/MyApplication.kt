@@ -1,4 +1,4 @@
-package com.vladtop.forecast_test_task.presentation.activities_and_app
+package com.vladtop.forecast_test_task.presentation
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

@@ -13,9 +13,10 @@ class ForecastRepository @Inject constructor(
     private val forecastMapper: ForecastMapper,
     private val dispatchers: DefaultDispatcherProvider
 ) {
-   suspend fun getForecast(city: String): Forecast? = withContext(dispatchers.io) {
+    suspend fun getForecast(city: String): Forecast? = withContext(dispatchers.io) {
         forecastService
             .getForecast(city)
             .let(forecastMapper::transform)
     }
+
 }

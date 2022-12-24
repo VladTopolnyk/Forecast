@@ -7,16 +7,16 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.vladtop.forecast_test_task.presentation.main.MainFragment"
+        android:name="com.vladtop.forecast_test_task.presentation.search.SearchFragment"
         android:label="fragment_main"
-        tools:layout="@layout/fragment_main" >
+        tools:layout="@layout/fragment_search" >
         <action
             android:id="@+id/action_mainFragment_to_forecastFragment"
             app:destination="@id/forecastFragment" />
     </fragment>
     <fragment
         android:id="@+id/forecastFragment"
-        android:name="com.vladtop.forecast_test_task.ForecastFragment"
+        android:name="com.vladtop.forecast_test_task.presentation.forecast.ForecastFragment"
         android:label="fragment_forecast"
         tools:layout="@layout/fragment_forecast" />
 </navigation>

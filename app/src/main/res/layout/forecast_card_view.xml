@@ -37,7 +37,7 @@
                 android:id="@+id/weather_state_IV"
                 android:layout_width="match_parent"
                 android:layout_height="40sp"
-                tools:srcCompat="@drawable/location_icon" />
+                tools:srcCompat="@drawable/weather_icon" />
 
             <TextView
                 android:id="@+id/temperature_TV"

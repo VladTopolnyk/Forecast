@@ -1,21 +1,19 @@
-package com.vladtop.forecast_test_task.presentation.adapters
+package com.vladtop.forecast_test_task.presentation.adapters.RecyclerViewAdapter
 
-import android.annotation.SuppressLint
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.vladtop.forecast_test_task.data.mappers.DateConverter
 import com.vladtop.forecast_test_task.databinding.ForecastCardViewBinding
 import com.vladtop.forecast_test_task.domain.Weather
-import java.text.SimpleDateFormat
-import java.util.*
 
-class ForecastAdapter(
+class ForecastRVAdapter(
     private val forecast: List<Weather>,
     private val onItemClickListener: OnItemClickListener
-) : RecyclerView.Adapter<ForecastAdapter.ForecastViewHolder>() {
+) : RecyclerView.Adapter<ForecastRVAdapter.ForecastViewHolder>() {
 
     interface OnItemClickListener {
         fun onItemClick(position: Int)
@@ -49,18 +47,10 @@ class ForecastAdapter(
         }
 
         private fun setDate(date: String) {
-            val outputDate = changeDateFormat(date)
-            Log.e("formatted", outputDate)
-            binding.dateTV.text = outputDate
+            Log.e("formatted", date)
+            binding.dateTV.text = date
         }
 
-        @SuppressLint("SimpleDateFormat")
-        private fun changeDateFormat(date: String): String {
-            val inputFormat = SimpleDateFormat("yyyy-mm-dd")
-            val outputFormat = SimpleDateFormat("dd MMM")
-            val date1 = inputFormat.parse(date)
-            return outputFormat.format(date1 as Date)
-        }
     }
 
     override fun getItemCount(): Int = forecast.size
