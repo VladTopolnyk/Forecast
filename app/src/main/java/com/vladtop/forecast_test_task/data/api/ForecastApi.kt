@@ -13,7 +13,7 @@ interface ForecastApi {
 
     @GET("forecast.json?key=$API_KEY")
     suspend fun getForecast(
-        @Query("q") city: String,
+        @Query("q") query: String,
         @Query("days") days: Int = 4,
         @Query("aqi") aqi: String = "no",
         @Query("alerts") alerts: String = "no"

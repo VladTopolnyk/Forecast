@@ -17,7 +17,7 @@ class SearchViewModel @Inject constructor(
     private val _forecastLiveData = MutableLiveData<Forecast?>()
     val forecastLiveData: LiveData<Forecast?> = _forecastLiveData
 
-    fun getForecast(city: String) = viewModelScope.launch {
-        _forecastLiveData.value = repository.getForecast(city)
+    fun getForecast(query: String) = viewModelScope.launch {
+        _forecastLiveData.value = repository.getForecast(query)
     }
 }
