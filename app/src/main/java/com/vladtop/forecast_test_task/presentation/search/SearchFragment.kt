@@ -12,6 +12,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SearchView
@@ -51,13 +52,12 @@ class SearchFragment : Fragment(R.layout.fragment_search),
     private lateinit var forecastRVAdapter: ForecastRVAdapter
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
-
     @SuppressLint("MissingPermission")
     private val locationPermission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
             when {
                 granted -> {
-                    Log.e("Permission", "granted")
+                    //granted
                     fusedLocationClient.getCurrentLocation(
                         Priority.PRIORITY_HIGH_ACCURACY,
                         object : CancellationToken() {
@@ -66,18 +66,17 @@ class SearchFragment : Fragment(R.layout.fragment_search),
 
                             override fun isCancellationRequested() = false
                         }).addOnSuccessListener { location: Location? ->
-                        Log.e(
-                            "LastLocation",
-                            "latitude -> ${location?.latitude}, longitude -> ${location?.longitude}"
-                        )
+                        //getCoordinates
                         searchViewModel.getForecast("${location?.latitude},${location?.longitude}")
+                        launchProgressBar(true, ProgressBar.VISIBLE)
+
                     }
                 }
                 shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION) -> {
-                    Log.e("Permission", "denied for the first time")
+                    //denied for the first time
                 }
                 else -> {
-                    Log.e("Permission", "denied forever")
+                    //deniedForever
                     showExplanationDialog()
                 }
             }
@@ -147,6 +146,7 @@ class SearchFragment : Fragment(R.layout.fragment_search),
 
     @SuppressLint("NotifyDataSetChanged")
     private fun observeForecast(forecast: Forecast?) {
+        launchProgressBar(false, ProgressBar.INVISIBLE)
         if (forecast == null) {
             noForecastCase()
             return
@@ -157,6 +157,12 @@ class SearchFragment : Fragment(R.layout.fragment_search),
         forecastRVAdapter.notifyDataSetChanged()
         println(weatherList)
     }
+
+    private fun launchProgressBar(isEnabled: Boolean, visible: Int) {
+        binding.root.isEnabled = isEnabled
+        binding.progressBar.visibility = visible
+    }
+
 
     @SuppressLint("SetTextI18n")
     private fun updateUI(forecast: Forecast) {
@@ -221,6 +227,7 @@ class SearchFragment : Fragment(R.layout.fragment_search),
     override fun onQueryTextSubmit(query: String?): Boolean {
         Log.e("query", query.isNullOrBlank().toString())
         if (query != null) onSearchClicked(query)
+        launchProgressBar(true, ProgressBar.VISIBLE)
         return false
     }
 
