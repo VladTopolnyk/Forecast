@@ -21,7 +21,7 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast),
     ViewPagerAdapter.OnBackClickListener {
 
     private var position: Int = 0
-    private lateinit var weatherList: ArrayList<Weather>
+    private lateinit var dayList: ArrayList<Weather.DayForecast>
     private lateinit var binding: FragmentForecastBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +30,7 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast),
             position = it.getInt(POSITION_KEY)
             val json = it.getString(FORECAST_KEY)
             if (json != null) {
-                weatherList = ForecastConverter.fromJson(json) as ArrayList<Weather>
+                dayList = ForecastConverter.fromJson(json) as ArrayList<Weather.DayForecast>
                 moveToFirst(position)
             }
         }
@@ -47,7 +47,7 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast),
 
     private fun provideViewPager() {
         val viewPager = binding.viewPager
-        viewPager.adapter = ViewPagerAdapter(weatherList, this, requireContext())
+        viewPager.adapter = ViewPagerAdapter(dayList, this, requireContext())
         viewPager.setPageTransformer(ZoomOutPageTransformer())
         provideTabLayout()
     }
@@ -55,7 +55,7 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast),
     private fun provideTabLayout() {
         val tabLayout = binding.tabLayout
         TabLayoutMediator(tabLayout, binding.viewPager) { tab, p ->
-            tab.text = weatherList[p].date
+            tab.text = dayList[p].date
         }.attach()
     }
 
@@ -68,8 +68,8 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast),
     }
 
     private fun moveToFirst(position: Int) {
-        val mainGif = weatherList[position]
-        weatherList.removeAt(position)
-        weatherList.add(0, mainGif)
+        val mainGif = dayList[position]
+        dayList.removeAt(position)
+        dayList.add(0, mainGif)
     }
 }

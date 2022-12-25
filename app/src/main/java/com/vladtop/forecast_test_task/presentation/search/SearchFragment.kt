@@ -48,7 +48,7 @@ class SearchFragment : Fragment(R.layout.fragment_search),
 
     private lateinit var binding: FragmentSearchBinding
     private val searchViewModel: SearchViewModel by viewModels()
-    private val weatherList = arrayListOf<Weather>()
+    private val weatherList = arrayListOf<Weather.DayForecast>()
     private lateinit var forecastRVAdapter: ForecastRVAdapter
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
@@ -68,7 +68,7 @@ class SearchFragment : Fragment(R.layout.fragment_search),
                         }).addOnSuccessListener { location: Location? ->
                         //getCoordinates
                         searchViewModel.getForecast("${location?.latitude},${location?.longitude}")
-                        launchProgressBar(true, ProgressBar.VISIBLE)
+                        launchProgressBar(false, ProgressBar.VISIBLE)
 
                     }
                 }
@@ -146,14 +146,14 @@ class SearchFragment : Fragment(R.layout.fragment_search),
 
     @SuppressLint("NotifyDataSetChanged")
     private fun observeForecast(forecast: Forecast?) {
-        launchProgressBar(false, ProgressBar.INVISIBLE)
+        launchProgressBar(true, ProgressBar.INVISIBLE)
         if (forecast == null) {
             noForecastCase()
             return
         }
         updateUI(forecast)
         weatherList.clear()
-        weatherList.addAll(forecast.weatherList)
+        weatherList.addAll(forecast.dayList)
         forecastRVAdapter.notifyDataSetChanged()
         println(weatherList)
     }
@@ -166,7 +166,7 @@ class SearchFragment : Fragment(R.layout.fragment_search),
 
     @SuppressLint("SetTextI18n")
     private fun updateUI(forecast: Forecast) {
-        val currentWeather = forecast.weatherList[0]
+        val currentWeather = forecast.dayList[0]
 
         binding.cityTV.text =
             "${forecast.city} ${toHourDateFormat(currentWeather.date)}"

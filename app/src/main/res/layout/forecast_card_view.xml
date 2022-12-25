@@ -8,9 +8,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="130dp"
         android:layout_height="130dp"
-        android:backgroundTint="#84D4FC"
-        app:cardCornerRadius="15dp"
-        app:cardElevation="5dp"
+        style="@style/CardView.CuteStyle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,12 +23,10 @@
 
             <TextView
                 android:id="@+id/date_TV"
+                style="@style/BaseTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:textColor="@color/textColor"
-                android:textSize="25sp"
-                android:textStyle="bold"
+                android:layout_marginTop="0dp"
                 tools:text="26 Sep" />
 
             <ImageView
@@ -41,12 +37,10 @@
 
             <TextView
                 android:id="@+id/temperature_TV"
+                style="@style/BaseTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:textAlignment="center"
-                android:textColor="@color/textColor"
-                android:textSize="30sp"
-                android:textStyle="bold"
+                android:layout_marginTop="0dp"
                 tools:text="+2" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>

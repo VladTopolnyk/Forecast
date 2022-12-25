@@ -2,7 +2,6 @@ package com.vladtop.pet_project.data.mappers
 
 import com.vladtop.forecast_test_task.data.mappers.DateConverter
 import com.vladtop.forecast_test_task.domain.Forecast
-import com.vladtop.forecast_test_task.domain.Hour
 import com.vladtop.forecast_test_task.domain.Weather
 import com.vladtop.pet_project.data.DTO.ForecastDTO
 import com.vladtop.pet_project.data.DTO.ForecastDayDTO
@@ -18,15 +17,15 @@ class ForecastMapper @Inject constructor() {
         else null
 
     private fun ForecastDTO.configureForecast(): Forecast? {
-        val forecast = arrayListOf<Weather>()
+        val forecast = arrayListOf<Weather.DayForecast>()
         forecast.addAll(getDayForecast())
         if (forecast.isEmpty()) return null
         return Forecast(location.name, forecast)
     }
 
-    private fun ForecastDTO.getDayForecast(): List<Weather> =
+    private fun ForecastDTO.getDayForecast(): List<Weather.DayForecast> =
         weekForecast.forecastday.map {
-            Weather(
+            Weather.DayForecast(
                 date = DateConverter.toDayDateFormat(it.date),
                 weatherState = it.day.condition.icon,
                 temperature = it.day.avgTemp.toInt(),
@@ -35,9 +34,9 @@ class ForecastMapper @Inject constructor() {
             )
         }
 
-    private fun ForecastDayDTO.getHoursForecast(): List<Hour> = hoursForecast.map {
-        Hour(
-            time = it.time,
+    private fun ForecastDayDTO.getHoursForecast(): List<Weather.HourForecast> = hoursForecast.map {
+        Weather.HourForecast(
+            time = DateConverter.toHourDateFormat(it.time),
             temperature = it.temperature.toInt(),
             weatherStateIconUrl = it.conditionDTO.icon
         )

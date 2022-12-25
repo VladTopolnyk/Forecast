@@ -6,15 +6,15 @@ import com.vladtop.forecast_test_task.domain.Weather
 
 object ForecastConverter {
 
-    fun toJson(list: List<Weather>): String {
+    fun toJson(list: List<Weather.DayForecast>): String {
         val gson = Gson()
-        val type = object : TypeToken<List<Weather>>() {}.type
+        val type = object : TypeToken<List<Weather.DayForecast>>() {}.type
         return gson.toJson(list, type)
     }
 
-    fun fromJson(json: String): List<Weather> {
+    fun fromJson(json: String): List<Weather.DayForecast> {
         val gson = Gson()
-        val type = object : TypeToken<List<Weather>>() {}.type
+        val type = object : TypeToken<List<Weather.DayForecast>>() {}.type
         return gson.fromJson(json, type)
     }
 }
