@@ -16,12 +16,10 @@
 
         <TextView
             android:id="@+id/time_TV"
+            style="@style/BaseTextStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textColor="@color/textColor"
-            android:textSize="25sp"
-            android:textStyle="bold"
+            android:layout_marginTop="0dp"
             tools:text="15:00" />
 
         <ImageView
@@ -32,12 +30,10 @@
 
         <TextView
             android:id="@+id/temperature_TV"
+            style="@style/BaseTextStyle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textAlignment="center"
-            android:textColor="@color/textColor"
-            android:textSize="30sp"
-            android:textStyle="bold"
+            android:layout_marginTop="0dp"
             tools:text="+2" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

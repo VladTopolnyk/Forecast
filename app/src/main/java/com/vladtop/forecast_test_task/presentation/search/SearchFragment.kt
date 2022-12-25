@@ -3,8 +3,11 @@ package com.vladtop.forecast_test_task.presentation.search
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.location.Location
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
@@ -25,10 +28,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.Priority
-import com.google.android.gms.tasks.CancellationToken
-import com.google.android.gms.tasks.CancellationTokenSource
-import com.google.android.gms.tasks.OnTokenCanceledListener
 import com.vladtop.forecast_test_task.R
 import com.vladtop.forecast_test_task.data.mappers.DateConverter.toHourDateFormat
 import com.vladtop.forecast_test_task.data.mappers.ForecastConverter
@@ -45,12 +44,12 @@ const val FORECAST_KEY = "forecast"
 class SearchFragment : Fragment(R.layout.fragment_search),
     ForecastRVAdapter.OnItemClickListener,
     SearchView.OnQueryTextListener {
-
     private lateinit var binding: FragmentSearchBinding
     private val searchViewModel: SearchViewModel by viewModels()
     private val weatherList = arrayListOf<Weather.DayForecast>()
     private lateinit var forecastRVAdapter: ForecastRVAdapter
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+
 
     @SuppressLint("MissingPermission")
     private val locationPermission =
@@ -58,20 +57,15 @@ class SearchFragment : Fragment(R.layout.fragment_search),
             when {
                 granted -> {
                     //granted
-                    fusedLocationClient.getCurrentLocation(
-                        Priority.PRIORITY_HIGH_ACCURACY,
-                        object : CancellationToken() {
-                            override fun onCanceledRequested(listener: OnTokenCanceledListener) =
-                                CancellationTokenSource().token
-
-                            override fun isCancellationRequested() = false
-                        }).addOnSuccessListener { location: Location? ->
-                        //getCoordinates
-                        searchViewModel.getForecast("${location?.latitude},${location?.longitude}")
-                        launchProgressBar(false, ProgressBar.VISIBLE)
-
-                    }
+                    if (isInternetAvailable()) {
+                        //get Coordinates
+                        fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                            launchProgressBar(false, ProgressBar.VISIBLE)
+                            searchViewModel.getForecast("${location?.latitude},${location?.longitude}")
+                        }
+                    } else onInternetDisconnected()
                 }
+
                 shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION) -> {
                     //denied for the first time
                 }
@@ -82,50 +76,35 @@ class SearchFragment : Fragment(R.layout.fragment_search),
             }
         }
 
+    private fun onInternetDisconnected() {
+        Toast.makeText(requireContext(), "Internet Disconnected!", Toast.LENGTH_SHORT)
+            .show()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle
+        ?
     ): View {
         binding = FragmentSearchBinding.inflate(layoutInflater)
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View, savedInstanceState: Bundle?
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.searchView.setOnQueryTextListener(this)
 
         searchViewModel.forecastLiveData.observe(viewLifecycleOwner, ::observeForecast)
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+        fusedLocationClient =
+            LocationServices.getFusedLocationProviderClient(requireContext())
+
         binding.locationTV.setOnClickListener {
             onLocationClicked()
         }
         provideRecyclerView()
-
-    }
-
-    private fun showExplanationDialog() {
-        val dialog = AlertDialog.Builder(requireContext())
-            .setMessage("This provides weather to your location!")
-            .setTitle("Allow Location Permission!")
-            .setPositiveButton(
-                "Open Settings"
-            ) { _, _ ->
-                openSettings()
-            }
-            .setNegativeButton("Cancel") { dialog, _ ->
-                dialog.cancel()
-            }
-            .create()
-        dialog.show()
-    }
-
-
-    private fun openSettings() {
-        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-        val uri = Uri.fromParts("package", requireActivity().packageName, null)
-        intent.data = uri
-        startActivity(intent)
     }
 
     private fun onLocationClicked() {
@@ -133,7 +112,9 @@ class SearchFragment : Fragment(R.layout.fragment_search),
     }
 
     private fun onLocationPermission() {
-        locationPermission.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
+        locationPermission.launch(
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
     }
 
     private fun provideRecyclerView() {
@@ -199,13 +180,36 @@ class SearchFragment : Fragment(R.layout.fragment_search),
         ).show()
     }
 
+    private fun isInternetAvailable()
+            : Boolean {
+        val result: Boolean
+        val connectivityManager =
+            requireActivity().applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkCapabilities = connectivityManager.activeNetwork ?: return false
+        val actNw =
+            connectivityManager.getNetworkCapabilities(networkCapabilities)
+                ?: return false
+        result = when {
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+            else -> false
+        }
+
+        return result
+    }
 
     private fun onSearchClicked(query: String) {
-        if (query.length < 2) {
+        if (query.trim().length < 2) {
             wrongInputCase()
             return
         }
-        searchViewModel.getForecast(query)
+        if (isInternetAvailable()) {
+            launchProgressBar(false, ProgressBar.VISIBLE)
+
+            searchViewModel.getForecast(query)
+
+        } else onInternetDisconnected()
     }
 
     private fun wrongInputCase() {
@@ -221,19 +225,49 @@ class SearchFragment : Fragment(R.layout.fragment_search),
             POSITION_KEY to position,
             FORECAST_KEY to ForecastConverter.toJson(weatherList)
         )
-        findNavController().navigate(R.id.action_mainFragment_to_forecastFragment, bundle)
+        findNavController().navigate(
+            R.id.action_mainFragment_to_forecastFragment,
+            bundle
+        )
     }
 
-    override fun onQueryTextSubmit(query: String?): Boolean {
+    override fun onQueryTextSubmit(
+        query: String?
+    )
+            : Boolean {
         Log.e("query", query.isNullOrBlank().toString())
         if (query != null) onSearchClicked(query)
-        launchProgressBar(true, ProgressBar.VISIBLE)
         return false
     }
 
-    override fun onQueryTextChange(p0: String?): Boolean {
+    override fun onQueryTextChange(
+        p0: String?
+    )
+            : Boolean {
         return false
     }
 
 
+    private fun openSettings() {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+        val uri = Uri.fromParts("package", requireActivity().packageName, null)
+        intent.data = uri
+        startActivity(intent)
+    }
+
+    private fun showExplanationDialog() {
+        val dialog = AlertDialog.Builder(requireContext())
+            .setMessage("This provides weather to your location!")
+            .setTitle("Allow Location Permission!")
+            .setPositiveButton(
+                "Open Settings"
+            ) { _, _ ->
+                openSettings()
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.cancel()
+            }
+            .create()
+        dialog.show()
+    }
 }
