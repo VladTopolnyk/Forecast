@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.vladtop.forecast_test_task.databinding.ViewPagerItemBinding
 import com.vladtop.forecast_test_task.domain.Weather
 import com.vladtop.forecast_test_task.presentation.adapters.BaseRVAdapter
@@ -39,8 +40,18 @@ class ViewPagerAdapter(
 
         private fun provideRecyclerView() {
             binding.hourForecastRV.layoutManager =
-                GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false)
+                GridLayoutManager(
+                    context,
+                    binding.hourForecastRV.autoFitColumns(130),
+                    GridLayoutManager.VERTICAL,
+                    false
+                )
             binding.hourForecastRV.adapter = HourForecastRVAdapter(hourForecast)
+        }
+
+        private fun RecyclerView.autoFitColumns(columnWidth: Int): Int {
+            val displayMetrics = context.resources.displayMetrics
+            return ((displayMetrics.widthPixels / displayMetrics.density) / columnWidth).toInt()
         }
     }
 

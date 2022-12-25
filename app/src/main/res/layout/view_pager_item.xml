@@ -53,7 +53,7 @@
         android:layout_height="match_parent"
         android:layout_marginTop="300dp"
         android:horizontalSpacing="6dp"
-        android:numColumns="4"
+        android:numColumns="auto_fit"
         android:verticalSpacing="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

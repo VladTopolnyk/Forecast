@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageButton
+            android:id="@+id/back_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/back" />
+
+        <TextView
+            android:id="@+id/city_TV"
+            style="@style/BaseTextStyle.Big"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Lviv 26 Jan" />
+
+        <ImageView
+            android:id="@+id/weather_state_IV"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            tools:src="@drawable/weather_icon" />
+
+        <TextView
+            android:id="@+id/temperature_TV"
+            style="@style/BaseTextStyle.Big"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            tools:text="-12" />
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/hour_forecast_RV"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="300dp"
+            android:horizontalSpacing="6dp"
+            android:numColumns="auto_fit"
+            android:verticalSpacing="6dp" />
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
